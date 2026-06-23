@@ -1,0 +1,149 @@
+/* dizayn.css - Тарҳи умумии интерфейс */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Tahoma, sans-serif;
+}
+
+:root {
+    --bg-main: #0f172a;
+    --bg-glass: rgba(255, 255, 255, 0.1);
+    --border-glass: rgba(255, 255, 255, 0.2);
+    --text-white: #f8fafc;
+    --text-yellow: #fcd34d;
+    --color-green: #10b981;
+    --color-red: #ef4444;
+    --color-blue: #3b82f6;
+    --color-purple: #8b5cf6;
+}
+
+body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    color: var(--text-white);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+h1, h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--text-yellow);
+    font-weight: 600;
+}
+
+.glass {
+    background: var(--bg-glass);
+    backdrop-filter: blur(12px);
+    border-radius: 18px;
+    padding: 25px;
+    border: 1px solid var(--border-glass);
+    margin-bottom: 25px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.nav-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-weight: 500;
+    transition: 0.3s ease;
+}
+
+.nav-menu a:hover {
+    background: var(--color-blue);
+    transform: translateY(-2px);
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-glass);
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 16px;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--color-blue);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-green { background: var(--color-green); color: white; }
+.btn-red { background: var(--color-red); color: white; }
+.btn-blue { background: var(--color-blue); color: white; }
+.btn-purple { background: var(--color-purple); color: white; }
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.stat-card {
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.stat-card h3 {
+    font-size: 16px;
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+.stat-card p {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Мутобиқ барои телефон */
+@media (max-width: 600px) {
+    body { padding: 12px; }
+    .glass { padding: 18px; }
+    .nav-menu a { padding: 10px 14px; font-size: 14px; }
+}

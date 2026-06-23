@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔎 Таҳлил ва омори умумӣ</title>
+    <link rel="stylesheet" href="dizayn.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔎 Панели таҳлил ва ҳолати умумӣ</h1>
+
+        <nav class="nav-menu">
+            <a href="sahofai_aval.html">🏠 Асосӣ</a>
+            <a href="sahofai_daromad.html">💰 Даромад</a>
+            <a href="sahofai_harojot.html">💸 Хароҷот</a>
+            <a href="sahofai_p2p.html">📈 P2P</a>
+            <a href="sahofai_hisobot.html">📊 Ҳисобот</a>
+            <a href="sahofai_taftish.html">🔎 Таҳлил</a>
+        </nav>
+
+        <div class="glass">
+            <h2>💵 Маблағи умумии боқимонда</h2>
+            <div class="stat-card" style="max-width: 320px; margin: 0 auto;">
+                <h3>Ҳама маблағҳо дар ҳисоб</h3>
+                <p style="font-size: 34px; color: #fcd34d; font-weight: bold;" id="total-all">0.00 сомон</p>
+            </div>
+        </div>
+
+        <div class="glass">
+            <h2>📊 Муқоисаи давраҳо</h2>
+            <div class="row">
+                <div class="stat-card">
+                    <h3>📅 Имрӯз</h3>
+                    <p>Фоидаи холис: <span id="analyze-daily">0.00</span> сомон</p>
+                </div>
+                <div class="stat-card">
+                    <h3>📆 Ин ҳафта</h3>
+                    <p>Фоидаи холис: <span id="analyze-weekly">0.00</span> сомон</p>
+                </div>
+                <div class="stat-card">
+                    <h3>🗓️ Ин моҳ</h3>
+                    <p>Фоидаи холис: <span id="analyze-monthly">0.00</span> сомон</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass">
+            <h2>📈 Омори муфассал</h2>
+            <div class="row">
+                <div class="stat-card">
+                    <h3>Шумораи амалиётҳо</h3>
+                    <p id="stat-count">0 адад</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Фоидаи умумии P2P</h3>
+                    <p id="stat-p2p-total">0.00 сомон</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Маблағи миёнаи амалиёт</h3>
+                    <p id="stat-average">0.00 сомон</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass" style="text-align: center;">
+            <button class="btn btn-blue" onclick="loadAnalysis()">🔄 Нав кардани маълумот</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000";
+
+        async function loadAnalysis() {
+            try {
+                // Гирифтани маълумот аз сервер
+                const balanceRes = await fetch(`${API_URL}/balance`);
+                const balance = await balanceRes.json();
+
+                const dailyRes = await fetch(`${API_URL}/report/daily`);
+                const daily = await dailyRes.json();
+
+                const weeklyRes = await fetch(`${API_URL}/report/weekly`);
+                const weekly = await weeklyRes.json();
+
+                const monthlyRes = await fetch(`${API_URL}/report/monthly`);
+                const monthly = await monthlyRes.json();
+
+                // Намоиши маълумот дар саҳифа
+                document.getElementById("total-all").textContent = `${balance.total_balance} сомон`;
+                document.getElementById("analyze-daily").textContent = daily.net;
+                document.getElementById("analyze-weekly").textContent = weekly.net;
+                document.getElementById("analyze-monthly").textContent = monthly.net;
+                document.getElementById("stat-count").textContent = `${monthly.transactions_count} адад`;
+                document.getElementById("stat-p2p-total").textContent = `${monthly.p2p_profit} сомон`;
+
+                // Ҳисоб кардани маблағи миёна
+                const avgAmount = monthly.transactions_count > 0 
+                    ? ((monthly.income + monthly.p2p_profit) / monthly.transactions_count).toFixed(2)
+                    : "0.00";
+                document.getElementById("stat-average").textContent = `${avgAmount} сомон`;
+
+            } catch (error) {
+                alert("❌ Хатогӣ! Аввал серверро бо фармони `python server_api.py` оғоз кунед, то маълумот бор шавад.");
+            }
+        }
+
+        // Ҳангоми кушодани саҳифа маълумот бор мешавад
+        window.onload = loadAnalysis;
+    </script>
+</body>
+</html>

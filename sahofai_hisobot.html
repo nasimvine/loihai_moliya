@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ҳисоботҳо</title>
+    <link rel="stylesheet" href="dizayn.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Ҳисоботҳо ва омори молия</h1>
+
+        <nav class="nav-menu">
+            <a href="sahofai_aval.html">🏠 Асосӣ</a>
+            <a href="sahofai_daromad.html">💰 Даромад</a>
+            <a href="sahofai_harojot.html">💸 Хароҷот</a>
+            <a href="sahofai_p2p.html">📈 P2P</a>
+            <a href="sahofai_hisobot.html">📊 Ҳисобот</a>
+            <a href="sahofai_taftish.html">🔎 Таҳлил</a>
+        </nav>
+
+        <div class="glass">
+            <h2>📅 Ҳисоботи рӯзона</h2>
+            <div class="row">
+                <div class="stat-card">
+                    <h3>Даромад</h3>
+                    <p id="rep-daily-income">0.00 сомон</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Хароҷот</h3>
+                    <p id="rep-daily-expense">0.00 сомон</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Фоида P2P</h3>
+                    <p id="rep-daily-p2p">0.00 сомон</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Фоидаи холис</h3>
+                    <p id="rep-daily-net">0.00 сомон</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass">
+            <h2>📆 Ҳисоботи моҳона</h2>
+            <div class="row">
+                <div class="stat-card">
+                    <h3>Даромад</h3>
+                    <p id="rep-month-income">0.00 сомон</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Хароҷот</h3>
+                    <p id="rep-month-expense">0.00 сомон</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Фоида P2P</h3>
+                    <p id="rep-month-p2p">0.00 сомон</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Фоидаи холис</h3>
+                    <p id="rep-month-net">0.00 сомон</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Шумораи амалиёт</h3>
+                    <p id="rep-month-count">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass">
+            <h2>📈 Диаграмма: Даромад ва хароҷот</h2>
+            <canvas id="chart-income-expense" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000";
+
+        async function loadReports() {
+            try {
+                const daily = await fetch(`${API_URL}/report/daily`).then(r => r.json());
+                const monthly = await fetch(`${API_URL}/report/monthly`).then(r => r.json());
+
+                // Рӯзона
+                document.getElementById("rep-daily-income").textContent = `${daily.income} сомон`;
+                document.getElementById("rep-daily-expense").textContent = `${daily.expense} сомон`;
+                document.getElementById("rep-daily-p2p").textContent = `${daily.p2p_profit} сомон`;
+                document.getElementById("rep-daily-net").textContent = `${daily.net} сомон`;
+
+                // Моҳона
+                document.getElementById("rep-month-income").textContent = `${monthly.income} сомон`;
+                document.getElementById("rep-month-expense").textContent = `${monthly.expense} сомон`;
+                document.getElementById("rep-month-p2p").textContent = `${monthly.p2p_profit} сомон`;
+                document.getElementById("rep-month-net").textContent = `${monthly.net} сомон`;
+                document.getElementById("rep-month-count").textContent = monthly.transactions_count;
+
+                // Диаграмма
+                const ctx = document.getElementById("chart-income-expense").getContext("2d");
+                new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        labels: ["Даромад", "Хароҷот", "Фоида P2P"],
+                        datasets: [{
+                            data: [monthly.income, monthly.expense, monthly.p2p_profit],
+                            backgroundColor: ["#10b981", "#ef4444", "#8b5cf6"]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { labels: { color: "#f8fafc" } } }
+                    }
+                });
+
+            } catch (error) {
+                alert("❌ Хатогӣ дар пайвастшавӣ ба сервер! Аввал серверро оғоз кунед.");
+            }
+        }
+
+        window.onload = loadReports;
+    </script>
+</body>
+</html>

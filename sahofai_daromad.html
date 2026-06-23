@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сабти даромад</title>
+    <link rel="stylesheet" href="dizayn.css">
+</head>
+<body>
+    <div class="container">
+        <h1>💰 Сабти даромад</h1>
+
+        <nav class="nav-menu">
+            <a href="sahofai_aval.html">🏠 Асосӣ</a>
+            <a href="sahofai_daromad.html">💰 Даромад</a>
+            <a href="sahofai_harojot.html">💸 Хароҷот</a>
+            <a href="sahofai_p2p.html">📈 P2P</a>
+            <a href="sahofai_hisobot.html">📊 Ҳисобот</a>
+            <a href="sahofai_taftish.html">🔎 Таҳлил</a>
+        </nav>
+
+        <div class="glass">
+            <form id="income-form">
+                <div class="form-group">
+                    <label>Маблағ (сомон):</label>
+                    <input type="number" step="0.01" min="0.01" id="income-amount" required>
+                </div>
+                <div class="form-group">
+                    <label>Сабаб:</label>
+                    <input type="text" id="income-reason" placeholder="Масалан: Музди кор, Фурӯш...">
+                </div>
+                <div class="form-group">
+                    <label>Сана:</label>
+                    <input type="date" id="income-date" value="">
+                </div>
+                <button type="button" class="btn btn-green" onclick="submitIncome()">Сабт кардан</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("income-date").value = new Date().toISOString().split("T")[0];
+    </script>
+    <script src="skript.js"></script>
+</body>
+</html>
