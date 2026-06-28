@@ -1,4 +1,3 @@
-# bot_cod.py
 """
 Логикаи пурраи Telegram Bot
 Бо меню, фармонҳо ва қабули маълумот
@@ -13,6 +12,9 @@ from aiogram.fsm.state import State, StatesGroup
 from config import BOT_TOKEN, ALLOWED_USER_ID
 
 API_URL = "http://127.0.0.1:8000"
+
+# Калиди нави бот
+BOT_TOKEN = "8958152466:AAEIJBHqMtHSQSqz1rEwbTCRnPnpzi6jXls"
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
@@ -40,6 +42,7 @@ async def start_cmd(message: types.Message):
         return
     await message.answer(
         "👋 Хуш омадед ба системаи идоракунии молияи шахсӣ!\n\n"
+        "Бот: @hisoboti_nasim_bot\n"
         "Барои идома аз менюи зер интихоб кунед:",
         reply_markup=main_menu()
     )
@@ -49,13 +52,13 @@ async def check_cmd(message: types.Message):
     if message.from_user.id != ALLOWED_USER_ID:
         return
     try:
-        balance = requests.get(f"{API_URL}/balance").json()["total_balance"]
-        daily = requests.get(f"{API_URL}/report/daily").json()
-        monthly = requests.get(f"{API_URL}/report/monthly").json()
+        balance = requests.get(f"{API_URL}/balance", timeout=5).json()
+        daily = requests.get(f"{API_URL}/report/daily", timeout=5).json()
+        monthly = requests.get(f"{API_URL}/report/monthly", timeout=5).json()
 
         text = f"""🔎 ҲОЛАТИ УМУМӢ
 
-💵 Маблағи умумӣ: {balance} сомон
+💵 Маблағи умумӣ: {balance['total_balance']} сомон
 
 📅 Имрӯз:
 • Даромад: {daily['income']} сомон
@@ -70,15 +73,15 @@ async def check_cmd(message: types.Message):
 • Шумораи амалиёт: {monthly['transactions_count']}
 """
         await message.answer(text)
-    except:
-        await message.answer("❌ Хатогӣ! Сервер кор намекунад.")
+    except Exception as e:
+        await message.answer(f"❌ Хатогӣ! Сервер кор намекунад ё пайваст нест.\nТафсилот: {str(e)}")
 
 @dp.message(Command("report"))
 async def report_cmd(message: types.Message):
     if message.from_user.id != ALLOWED_USER_ID:
         return
     try:
-        res = requests.get(f"{API_URL}/report/monthly").json()
+        res = requests.get(f"{API_URL}/report/monthly", timeout=5).json()
         text = f"""📊 ҲИСОБОТИ МОҲОНА
 
 💵 Даромад: {res['income']} сомон
@@ -88,8 +91,8 @@ async def report_cmd(message: types.Message):
 🔢 Шумораи амалиёт: {res['transactions_count']}
 """
         await message.answer(text)
-    except:
-        await message.answer("❌ Хатогӣ! Сервер кор намекунад.")
+    except Exception as e:
+        await message.answer(f"❌ Хатогӣ! Сервер кор намекунад.\n{str(e)}")
 
 @dp.callback_query()
 async def menu_handler(callback: types.CallbackQuery, state: FSMContext):
@@ -128,11 +131,11 @@ async def process_income(message: types.Message, state: FSMContext):
             amount = float(message.text.strip())
             reason = "Дигар"
 
-        response = requests.post(f"{API_URL}/income", json={"amount": amount, "reason": reason})
+        response = requests.post(f"{API_URL}/income", json={"amount": amount, "reason": reason}, timeout=5)
         result = response.json()
         await message.answer(result["message"], reply_markup=main_menu())
-    except:
-        await message.answer("❌ Формат нодуруст! Аз нав кӯшиш кунед.")
+    except Exception as e:
+        await message.answer(f"❌ Формат нодуруст ё хатогӣ дар фиристодан!\n{str(e)}")
     await state.clear()
 
 @dp.message(InputStates.waiting_expense)
@@ -146,11 +149,11 @@ async def process_expense(message: types.Message, state: FSMContext):
             amount = float(message.text.strip())
             reason = "Дигар"
 
-        response = requests.post(f"{API_URL}/expense", json={"amount": amount, "reason": reason})
+        response = requests.post(f"{API_URL}/expense", json={"amount": amount, "reason": reason}, timeout=5)
         result = response.json()
         await message.answer(result["message"], reply_markup=main_menu())
-    except:
-        await message.answer("❌ Формат нодуруст! Аз нав кӯшиш кунед.")
+    except Exception as e:
+        await message.answer(f"❌ Формат нодуруст ё хатогӣ!\n{str(e)}")
     await state.clear()
 
 @dp.message(InputStates.waiting_p2p)
@@ -165,7 +168,7 @@ async def process_p2p(message: types.Message, state: FSMContext):
             "buy_amount": buy_amount,
             "buy_rate": buy_rate,
             "sell_rate": sell_rate
-        })
+        }, timeout=5)
         result = response.json()
         details = result["details"]
 
@@ -179,8 +182,8 @@ async def process_p2p(message: types.Message, state: FSMContext):
 💲 Фоида: {details['profit']} сомон
 """
         await message.answer(text, reply_markup=main_menu())
-    except:
-        await message.answer("❌ Формат нодуруст! Намуна: `1000 | 11.2 | 11.5`")
+    except Exception as e:
+        await message.answer(f"❌ Формат нодуруст! Намуна: `1000 | 11.2 | 11.5`\n{str(e)}")
     await state.clear()
 
 async def main():
